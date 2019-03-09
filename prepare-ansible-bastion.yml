@@ -1,0 +1,19 @@
+---
+
+# ansible-playbook  prepare-ansible-bastion.yml --extra-vars="target=<<target-name>>"
+
+
+- hosts: "{{ target }}"
+
+  become: yes
+
+  tasks:
+
+  - name: Install packages on ansible host
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - atomic-openshift-utils
+      - atomic-openshift-clients
+    when: ( 'ansible' in group_names )

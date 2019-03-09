@@ -1,0 +1,19 @@
+---
+
+# ansible-playbook -i yourinventory turn-off-configuration-agents.yml --extra-vars="target=<<target-name>>"
+
+- hosts: "{{ target }}"
+
+  become: yes
+
+  tasks:
+
+  - name: disable services
+    service:
+      name: "{{ item }}"
+      enabled: false
+      state: stopped 
+    with_items: 
+      - chef-client
+      - ds_agent
+      - puppet

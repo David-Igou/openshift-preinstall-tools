@@ -1,0 +1,61 @@
+---
+
+# ansible-playbook docker-scratch-storage-setup.yml --extra-vars="target=<<target-name>>"
+
+
+- hosts: "{{ target }}"
+
+  become: yes
+
+  vars:
+    docker_storage_setup: /etc/sysconfig/docker-storage-setup
+    docker_storage_device: /dev/sdc
+
+  tasks:
+
+  - name: Obtain stats on docker-storage-setup
+    stat:
+      path: "{{ docker_storage_setup }}"
+    register: dss
+
+  - fail:
+      msg: "{{ docker_storage_setup }} must exist, maybe install docker package?"
+    when: 
+      - dss.stat.exists == False
+      - ( 'ansible' not in group_names )
+      - ( 'nfs' not in group_names )
+
+  - name: Set the STORAGE_DRIVER
+    lineinfile:
+      line: "STORAGE_DRIVER=devicemapper"
+      regexp: "^STORAGE_DRIVER="
+      state: present
+      path: "{{ docker_storage_setup }}"
+    when: 
+      - ( 'ansible' not in group_names )
+      - ( 'nfs' not in group_names )
+
+  - name: Add DEVS line into docker-storage-setup
+    lineinfile:
+      line: "DEVS={{ docker_storage_device }}"
+      regexp: "^DEVS="
+      state: present
+      path: "{{ docker_storage_setup }}"
+    when: 
+      - ( 'ansible' not in group_names )
+      - ( 'nfs' not in group_names )
+
+  - name: Set the VG
+    lineinfile:
+      line: "VG=docker-vg"
+      regexp: "^VG="
+      state: present
+      path: "{{ docker_storage_setup }}"
+    when: 
+      - ( 'ansible' not in group_names )
+      - ( 'nfs' not in group_names )
+
+  # Not idempotent
+  #- name: wipe prior data from drive
+  #  shell: wipefs --all {{ docker_scratch_device }}
+  #  when: ('ansible' not in group_names)

@@ -1,0 +1,37 @@
+---
+
+# ansible-playbook --vault-password-file=.ansible_vault_password -K register-servers-into-rhsm.yml --extra-vars="target=<<target-name>>"
+
+- name: Register Servers into RHSM
+  hosts: "{{ target }}"
+
+  become: yes
+
+  vars:
+    rhsm_username: redhat-username
+    rhsm_password: redhat-password
+
+  tasks:
+
+  - name: Register master/infra into rhsm
+    redhat_subscription:
+      state: present
+      username: "{{ rhsm_username }}"
+      password: "{{ rhsm_password }}"
+      force_register: yes # You must force_register the first time
+      # Master Pools:
+      pool_ids:
+        - 66666666666666666666666666666666
+      # Derived Pools:  
+    when: ( 'master' in group_names ) or ( 'infra' in group_names ) or ( 'ansible' in group_names ) or ( 'nfs' in group_names )
+
+  - name: Register compute into rhsm 
+    redhat_subscription:
+      state: present
+      username: "{{ rhsm_username }}"
+      password: "{{ rhsm_password }}"
+      force_register: yes # You must force_register the first time
+      pool_ids: 
+        - 6666666666666666666666666666666
+      # Derived Pools:
+    when: ( 'compute' in group_names )

@@ -1,0 +1,16 @@
+---
+
+# ansible-playbook  execute-docker-storage.yml --extra-vars="target=<<target-name>>"
+
+
+- hosts: "{{ target }}"
+
+  become: yes
+
+  tasks:
+
+  - name: Setup Docker storage
+    command: /bin/docker-storage-setup
+    when:
+      - ( 'ansible' not in group_names )
+      - ( 'nfs' not in group_names )
