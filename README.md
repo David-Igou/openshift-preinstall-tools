@@ -1,3 +1,5 @@
+Note: I didn't write all of these and frequently hoard quick and clean solutions
+
 Getting ready to install Openshift can be painful and tedious. You are either given machines ridden with agents and tweaks that will cause you issues, or super vanilla boxes which require lots of manual tweaks to get ansible running smoothly. These help ease that pain.
 
 For less pain: `export ANSIBLE_HOST_KEY_CHECKING=0`
