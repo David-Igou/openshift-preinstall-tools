@@ -1,10 +1,6 @@
 ---
-
 # ansible-playbook  prepare-ansible-bastion.yml --extra-vars="target=<<target-name>>"
-
-
 - hosts: "{{ target }}"
-
   become: yes
 
   tasks:

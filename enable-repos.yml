@@ -1,12 +1,8 @@
 ---
-
 - name: Enable REPOS per server type
   hosts: all
-
   become: yes
-
   vars:
-
     rhsm_ose_repos:
       - rhel-7-server-rpms
       - rhel-7-server-extras-rpms

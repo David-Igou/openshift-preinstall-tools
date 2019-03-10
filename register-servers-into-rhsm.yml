@@ -1,12 +1,8 @@
 ---
-
 # ansible-playbook --vault-password-file=.ansible_vault_password -K register-servers-into-rhsm.yml --extra-vars="target=<<target-name>>"
-
 - name: Register Servers into RHSM
   hosts: "{{ target }}"
-
   become: yes
-
   vars:
     rhsm_username: redhat-username
     rhsm_password: redhat-password
